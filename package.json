@@ -1,0 +1,22 @@
+{
+  "name": "suresopbacken_0.1",
+  "version": "1.0.0",
+  "description": "it is suresop backend",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "vansh",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.8.4",
+    "nodemailer": "^6.9.16",
+    "nodemon": "^3.1.7",
+    "twilio": "^5.3.7"
+  }
+}
