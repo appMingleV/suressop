@@ -1,7 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import {otpSend,verifyOtp,emailOTP} from './controller/signupController.js'
+import {otpSend,verifyOtp,emailOTP,signup} from './controller/signupController.js'
+import pool from './config/db.js'
 
 dotenv.config();
 const app =express();
@@ -15,12 +16,12 @@ app.get('/',(req,res)=>{
 })
 
 
-// app.post('/api/signup')
+app.post('/api/vendor/signup',signup)
 
 //otp sending to given number-->
-app.post('/api/otp/number',otpSend)
+app.post('/api/otp/vendor/number',otpSend)
 //otp for email sending to given email-->
-app.post('/api/otp/email',emailOTP)
+app.post('/api/otp/vendor/email',emailOTP)
 
 
 //verify the OTP

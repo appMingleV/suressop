@@ -1,11 +1,29 @@
 import twilio from 'twilio';
 import nodemailer from 'nodemailer';
-
+import pool from '../config/db.js';
 const otpStore=[];
 export const signup=(req,res)=>{
-    const {owerName,gender,dob,mobile,email,address,storeName,userName,storeCategory,storeAddress,BusinessContact,aadharNumber,aadharNumberFront,aadharNumberBack,PAN,PANDocument,DocumentProof,documentType}=req.body;
+    console.log(req.body);
+    const {ownerName,gender,dob,mobile,email,address,storeName,userName,storeCategory,storeAddress,BusinessContact,aadharNumber,aadharNumberFront,aadharNumberBack,PAN,PANDocument,DocumentProof,documentType}=req.body;
     try{
-     const queryUser=`INSERT INTO  Vendor (Owner,gender,dob,mobile,email,address)`
+     const queryPersonal=`INSERT INTO  Vendor (ownerName,gender,dob,mobile,email,address) VALUES (?,?,?,?,?,?)`
+     const values=[ownerName,gender,dob,mobile,email,address];
+     console.log(+"Owener Name "+ownerName)
+     pool.query(queryPersonal,values,(err,result)=>{
+        console.log(result);
+        if(err){
+            return res.status(500).json({
+                status:"error",
+                message:"Something went wrong while trying to signup",
+                error:err.message
+            })
+        }
+    
+        return  res.status(200).json({
+            status:"success",
+            message:"User signup successful"
+        })
+     })
       
     }catch(err){
         res.status(500).json({
@@ -79,7 +97,7 @@ export const emailOTP=async (req,res)=>{
 
         // Store the OTP with email as the key
         otpStore[email] = { otp, expiresAt: Date.now() + 5 * 60 * 1000 }; // OTP expires in 5 minutes
-
+        
         // Email content
         const mailOptions = {
             from: 'vanshdeep703@gmail.com', // Sender's email
