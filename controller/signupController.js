@@ -4,8 +4,9 @@ import pool from '../config/db.js';
 import { response } from 'express';
 
 const otpStore=[];
-export const signup=(req,res)=>{
 
+export const signup=(req,res)=>{
+    const baseURL = `${req.protocol}://${req.get('host')}`;
     const {ownerName,gender,dob,mobile,email,address,storeName,userName,storeCategory,storeAddress,BusinessContact,aadharNumber,PAN,documentType}=req.body;
     const {aadharNumberFront,aadharNumberBack,PANDocument,DocumentProof}=req.files
     
