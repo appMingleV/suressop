@@ -49,7 +49,8 @@ export const signup=(req,res)=>{
             }
             return  res.status(200).json({
                 status:"success",
-                message:"User signup successful"
+                message:"User signup successful",
+                vendorId:vendorId
             })
           })
 
@@ -155,6 +156,8 @@ export const emailOTP=async (req,res)=>{
     }
 }
 
+
+
 export const verifyOtp = (req, res) => {
     const { mobile_number, otp } = req.body;
     const mobileNumber = "+91" + mobile_number;
@@ -180,3 +183,20 @@ export const verifyOtp = (req, res) => {
         });
     }
 };
+
+
+//vendor details show-->
+export const vendorDetails=(req,res)=>
+    {
+      try{
+       const {vendorId}=req.params;
+        
+      }catch(err){
+        res.status(500).json({
+            status:"error",
+            message:"Something went wrong while trying to fetch vendor details",
+            error:err.message
+        });
+      }
+
+    }
