@@ -158,7 +158,7 @@ export const emailOTP = async (req, res) => {
 
 
 
-export const verifyOtp = (req, res) => {
+export const verifyOtpNumber = (req, res) => {
     const { mobile_number, otp } = req.body;
     const mobileNumber = "+91" + mobile_number;
 
@@ -184,6 +184,32 @@ export const verifyOtp = (req, res) => {
     }
 };
 
+
+export const verifyOtpEmail = (req, res) => {
+    const { email, otp } = req.body;
+   
+
+    // Check if OTP exists and is valid
+    const storedOtpDetails = otpStore[email];
+    if (
+        storedOtpDetails &&
+        storedOtpDetails.otp === parseInt(otp) &&
+        storedOtpDetails.expiresAt > Date.now()
+    ) {
+        // OTP is valid
+        delete otpStore[email]; // Clear OTP after verification
+        return res.json({
+            status: "success",
+            message: "OTP verified successfully",
+        });
+    } else {
+        // OTP is invalid or expired
+        return res.status(400).json({
+            status: "failed",
+            message: "Invalid or expired OTP",
+        });
+    }
+};
 
 //vendor details show-->
 export const vendorDetails = (req, res) => {

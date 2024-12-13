@@ -44,7 +44,8 @@ app.post('/api/otp/vendor/email', emailOTP)
 
 
 //verify the OTP-->
-app.post('/api/verifyOTP', verifyOtp)
+app.post('/api/number/verifyOTP', verifyOtpNumber);
+app.post('/api/email/verifyOTP', verifyOtpEmail);
 
 
 //get vendor details-->
