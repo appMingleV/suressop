@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { otpSend, verifyOtp, emailOTP, signup,vendorDetails } from './controller/signupController.js'
+import { otpSend, verifyOtpNumber,verifyOtpEmail, emailOTP, signup,vendorDetails } from './controller/signupController.js'
 import pool from './config/db.js'
 import multer from "multer";
 
