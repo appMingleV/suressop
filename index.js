@@ -3,9 +3,23 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import {otpSend,verifyOtp,emailOTP,signup} from './controller/signupController.js'
 import pool from './config/db.js'
+import multer from "multer";
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/vendor/'); // Folder for storing uploaded files
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + '-' + file.originalname);
+    }
+});
+
+const upload = multer({storage});
+const multipleupload=upload.fields([{name:'aadharNumberFront'},{name:'aadharNumberBack'},{name:'PANDocument'},{name:'DocumentProof'}]);
+
+const app = express();
 dotenv.config();
-const app =express();
 app.use(cors());
 app.use(express.json());
 app.get('/',(req,res)=>{
@@ -16,7 +30,7 @@ app.get('/',(req,res)=>{
 })
 
 
-app.post('/api/vendor/signup',signup)
+app.post('/api/vendor/signup',multipleupload,signup)
 
 //otp sending to given number-->
 app.post('/api/otp/vendor/number',otpSend)

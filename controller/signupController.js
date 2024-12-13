@@ -1,14 +1,18 @@
 import twilio from 'twilio';
 import nodemailer from 'nodemailer';
 import pool from '../config/db.js';
+import { response } from 'express';
+
 const otpStore=[];
 export const signup=(req,res)=>{
-    console.log(req.body);
-    const {ownerName,gender,dob,mobile,email,address,storeName,userName,storeCategory,storeAddress,BusinessContact,aadharNumber,aadharNumberFront,aadharNumberBack,PAN,PANDocument,DocumentProof,documentType}=req.body;
+
+    const {ownerName,gender,dob,mobile,email,address,storeName,userName,storeCategory,storeAddress,BusinessContact,aadharNumber,PAN,documentType}=req.body;
+    const {aadharNumberFront,aadharNumberBack,PANDocument,DocumentProof}=req.files
+    
+   
     try{
      const queryPersonal=`INSERT INTO  Vendor (ownerName,gender,dob,mobile,email,address) VALUES (?,?,?,?,?,?)`
      const values=[ownerName,gender,dob,mobile,email,address];
-     console.log(+"Owener Name "+ownerName)
      pool.query(queryPersonal,values,(err,result)=>{
         console.log(result);
         if(err){
@@ -18,11 +22,38 @@ export const signup=(req,res)=>{
                 error:err.message
             })
         }
-    
-        return  res.status(200).json({
-            status:"success",
-            message:"User signup successful"
+        const vendorId=result.insertId;
+        const queryshopDetails="INSERT INTO  vendorStoreDetails (storeName,vendor_id,userName,storeCategory,storeAddress,BusinessContact,logo,banner) VALUES (?,?,?,?,?,?,?,?)";
+
+        const values=[storeName,vendorId,userName,storeCategory,storeAddress,BusinessContact,"uploads/defaultShop/banner.jpg","uploads/defaultShop/logo.jpg"]
+        pool.query(queryshopDetails,values,(err,result)=>{
+          if(err){
+            return res.status(500).json({
+                status:"error",
+                message:"Something went wrong while trying to signup",
+                error:err.message
+            })
+          }
+
+          const queryKYC='INSERT INTO VendorKYCDetails (vendor_id,aadharNumberFront,aadharNumberBack,PANDocument,DocumentProof,aadharNumber,PAN,documentType) VALUES (?,?,?,?,?,?,?,?)'
+          
+          const values=[vendorId,aadharNumberFront[0].filename,aadharNumberBack[0].filename,PANDocument[0].filename,DocumentProof[0].filename,aadharNumber,PAN,documentType];
+          pool.query(queryKYC,values,(err,result)=>{
+            if(err){
+                return res.status(500).json({
+                    status:"error",
+                    message:"Something went wrong while trying to signup",
+                    error:err.message
+                })
+            }
+            return  res.status(200).json({
+                status:"success",
+                message:"User signup successful"
+            })
+          })
+
         })
+      
      })
       
     }catch(err){
