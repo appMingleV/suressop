@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { otpSend, verifyOtp, emailOTP, signup } from './controller/signupController.js'
+import { otpSend, verifyOtp, emailOTP, signup,vendorDetails } from './controller/signupController.js'
 import pool from './config/db.js'
 import multer from "multer";
 
@@ -48,7 +48,7 @@ app.post('/api/verifyOTP', verifyOtp)
 
 
 //get vendor details-->
-app.get('/api/vendor/:vendorId')
+app.get('/api/vendor/:vendorId',vendorDetails)
 
 app.listen(process.env.PORT, (err) => {
     if (err) {

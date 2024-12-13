@@ -3,66 +3,66 @@ import nodemailer from 'nodemailer';
 import pool from '../config/db.js';
 import { response } from 'express';
 
-const otpStore=[];
+const otpStore = [];
 
-export const signup=(req,res)=>{
+export const signup = (req, res) => {
     const baseURL = `${req.protocol}://${req.get('host')}`;
-    const {ownerName,gender,dob,mobile,email,address,storeName,userName,storeCategory,storeAddress,BusinessContact,aadharNumber,PAN,documentType}=req.body;
-    const {aadharNumberFront,aadharNumberBack,PANDocument,DocumentProof}=req.files
-    
-   
-    try{
-     const queryPersonal=`INSERT INTO  Vendor (ownerName,gender,dob,mobile,email,address) VALUES (?,?,?,?,?,?)`
-     const values=[ownerName,gender,dob,mobile,email,address];
-     pool.query(queryPersonal,values,(err,result)=>{
-        console.log(result);
-        if(err){
-            return res.status(500).json({
-                status:"error",
-                message:"Something went wrong while trying to signup",
-                error:err.message
-            })
-        }
-        const vendorId=result.insertId;
-        const queryshopDetails="INSERT INTO  vendorStoreDetails (storeName,vendor_id,userName,storeCategory,storeAddress,BusinessContact,logo,banner) VALUES (?,?,?,?,?,?,?,?)";
+    const { ownerName, gender, dob, mobile, email, address, storeName, userName, storeCategory, storeAddress, BusinessContact, aadharNumber, PAN, documentType } = req.body;
+    const { aadharNumberFront, aadharNumberBack, PANDocument, DocumentProof } = req.files
 
-        const values=[storeName,vendorId,userName,storeCategory,storeAddress,BusinessContact,"uploads/defaultShop/banner.jpg","uploads/defaultShop/logo.jpg"]
-        pool.query(queryshopDetails,values,(err,result)=>{
-          if(err){
-            return res.status(500).json({
-                status:"error",
-                message:"Something went wrong while trying to signup",
-                error:err.message
-            })
-          }
 
-          const queryKYC='INSERT INTO VendorKYCDetails (vendor_id,aadharNumberFront,aadharNumberBack,PANDocument,DocumentProof,aadharNumber,PAN,documentType) VALUES (?,?,?,?,?,?,?,?)'
-          
-          const values=[vendorId,aadharNumberFront[0].filename,aadharNumberBack[0].filename,PANDocument[0].filename,DocumentProof[0].filename,aadharNumber,PAN,documentType];
-          pool.query(queryKYC,values,(err,result)=>{
-            if(err){
+    try {
+        const queryPersonal = `INSERT INTO  Vendor (ownerName,gender,dob,mobile,email,address) VALUES (?,?,?,?,?,?)`
+        const values = [ownerName, gender, dob, mobile, email, address];
+        pool.query(queryPersonal, values, (err, result) => {
+            console.log(result);
+            if (err) {
                 return res.status(500).json({
-                    status:"error",
-                    message:"Something went wrong while trying to signup",
-                    error:err.message
+                    status: "error",
+                    message: "Something went wrong while trying to signup",
+                    error: err.message
                 })
             }
-            return  res.status(200).json({
-                status:"success",
-                message:"User signup successful",
-                vendorId:vendorId
+            const vendorId = result.insertId;
+            const queryshopDetails = "INSERT INTO  vendorStoreDetails (storeName,vendor_id,userName,storeCategory,storeAddress,BusinessContact,logo,banner) VALUES (?,?,?,?,?,?,?,?)";
+
+            const values = [storeName, vendorId, userName, storeCategory, storeAddress, BusinessContact, "uploads/defaultShop/banner.jpg", "uploads/defaultShop/logo.jpg"]
+            pool.query(queryshopDetails, values, (err, result) => {
+                if (err) {
+                    return res.status(500).json({
+                        status: "error",
+                        message: "Something went wrong while trying to signup",
+                        error: err.message
+                    })
+                }
+
+                const queryKYC = 'INSERT INTO VendorKYCDetails (vendor_id,aadharNumberFront,aadharNumberBack,PANDocument,DocumentProof,aadharNumber,PAN,documentType) VALUES (?,?,?,?,?,?,?,?)'
+
+                const values = [vendorId, aadharNumberFront[0].filename, aadharNumberBack[0].filename, PANDocument[0].filename, DocumentProof[0].filename, aadharNumber, PAN, documentType];
+                pool.query(queryKYC, values, (err, result) => {
+                    if (err) {
+                        return res.status(500).json({
+                            status: "error",
+                            message: "Something went wrong while trying to signup",
+                            error: err.message
+                        })
+                    }
+                    return res.status(200).json({
+                        status: "success",
+                        message: "User signup successful",
+                        vendorId: vendorId
+                    })
+                })
+
             })
-          })
 
         })
-      
-     })
-      
-    }catch(err){
+
+    } catch (err) {
         res.status(500).json({
-            status:"error",
-            message:"Something went wrong while trying to signup",
-            error:err.message
+            status: "error",
+            message: "Something went wrong while trying to signup",
+            error: err.message
         });
     }
 
@@ -88,7 +88,7 @@ export const otpSend = async (req, res) => {
         // Generate and store the OTP
         const otp = generateOtp();
         otpStore[mobileNumber] = { otp, expiresAt: Date.now() + 5 * 60 * 1000 }; // OTP expires in 5 minutes
-        
+
         // Send OTP via Twilio
         const message = await client.messages.create({
             body: `Your OTP is ${otp}`,
@@ -110,17 +110,17 @@ export const otpSend = async (req, res) => {
     }
 };
 
-export const emailOTP=async (req,res)=>{
+export const emailOTP = async (req, res) => {
     try {
         const { email } = req.body;
 
         // Create a nodemailer transporter
         const transporter = nodemailer.createTransport({
             service: 'gmail',  // Replace with your email service
-            secure:true,
-            port:465,
+            secure: true,
+            port: 465,
             auth: {
-                user:'vanshdeep703@gmail.com', // Email account username (e.g., your Gmail address)
+                user: 'vanshdeep703@gmail.com', // Email account username (e.g., your Gmail address)
                 pass: 'ylql ugtz pouo qihs', // App password or email password
             },
         });
@@ -130,7 +130,7 @@ export const emailOTP=async (req,res)=>{
 
         // Store the OTP with email as the key
         otpStore[email] = { otp, expiresAt: Date.now() + 5 * 60 * 1000 }; // OTP expires in 5 minutes
-        
+
         // Email content
         const mailOptions = {
             from: 'vanshdeep703@gmail.com', // Sender's email
@@ -186,17 +186,50 @@ export const verifyOtp = (req, res) => {
 
 
 //vendor details show-->
-export const vendorDetails=(req,res)=>
-    {
-      try{
-       const {vendorId}=req.params;
-        
-      }catch(err){
+export const vendorDetails = (req, res) => {
+    try {
+        const { vendorId } = req.params;
+        const queryPersonal = `SELECT * FROM Vendor WHERE  id=${vendorId}`;
+        pool.query(queryPersonal, (err, result) => {
+            if (err) {
+                return res.status(500).json({
+                    status: "error",
+                    message: "Something went wrong while trying to fetch vendor details",
+                    error: err.message
+                })
+            }
+            if(!result[0].status){
+                return res.status(200).json({
+                    status: "pending",
+                    message: "Vendor is not approved",
+                })
+            }
+            const queryshopDetails = `SELECT * FROM vendorStoreDetails WHERE vendor_id=${vendorId}`
+            pool.query(queryshopDetails, (err, result1) => {
+                if (err) {
+                    return res.status(500).json({
+                        status: "error",
+                        message: "Something went wrong while trying to fetch vendor details",
+                        error: err.message
+                    })
+                }
+                return res.status(200).json({
+                    status: "success",
+                    message: "Vendor details fetched successfully",
+                    data:{
+                      vendorPersonalDetails:result[0], 
+                      vendorShopDetails: result1[0]
+                    }
+                    
+                })
+            })
+        })
+    } catch (err) {
         res.status(500).json({
-            status:"error",
-            message:"Something went wrong while trying to fetch vendor details",
-            error:err.message
+            status: "error",
+            message: "Something went wrong while trying to fetch vendor details",
+            error: err.message
         });
-      }
-
     }
+
+}
