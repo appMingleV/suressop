@@ -429,7 +429,17 @@ export const vendorDetails = (req, res) => {
                     status: "pending",
                     message: "Vendor is not approved",
                 })
-            }
+            }else if(result[0].status == 'Reject') {
+                return res.status(200).json({
+                    status: "reject",
+                    message: "Vendor is rejected",
+                })
+            }else if(result[0].status == 'Suspended'){
+                return res.status(200).json({
+                    status: "suspended",
+                    message: "Vendor is suspended",
+                })
+            } 
             const queryshopDetails = `SELECT * FROM vendorStoreDetails WHERE vendor_id=${vendorId}`
             pool.query(queryshopDetails, (err, result1) => {
                 if (err) {
