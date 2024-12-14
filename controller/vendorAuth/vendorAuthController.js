@@ -311,6 +311,67 @@ export const login = async (req, res) => {
         });
     }
 };
+
+
+
+export const verifyOtpSignup = (req, res) => {
+    const authData = req.body.email
+      ? { email: req.body.email }
+      : { mobile: "+91" + req.body.mobile_number };
+  
+    const otp = req.body.otp;
+  
+    if ("email" in authData) {
+      const { email } = authData;
+      const storedOtpDetails = otpStore[email];
+      if (
+        storedOtpDetails &&
+        storedOtpDetails.otp === parseInt(otp) &&
+        storedOtpDetails.expiresAt > Date.now()
+      ) {
+        // OTP is valid
+        delete otpStore[email]; // Clear OTP after verification
+      
+          return res.json({
+            status: "success",
+      
+            message: "OTP verified successfully",
+          });
+ 
+      } else {
+        // OTP is invalid or expired
+        return res.status(400).json({
+          status: "failed",
+          message: "Invalid or expired OTP",
+        });
+      }
+    } else {
+      const { mobile } = authData;
+      const storedOtpDetails = otpStore[mobile];
+      if (
+        storedOtpDetails &&
+        storedOtpDetails.otp === parseInt(otp) &&
+        storedOtpDetails.expiresAt > Date.now()
+      ) {
+        // OTP is valid
+        delete otpStore[mobile]; // Clear OTP after verification
+        
+  
+          return res.json({
+            status: "success",
+     
+            message: "OTP verified successfully",
+          });
+    
+      } else {
+        // OTP is invalid or expired
+        return res.status(400).json({
+          status: "failed",
+          message: "Invalid or expired OTP",
+        });
+      }
+    }
+  };
 export const verifyOtpNumber = (req, res) => {
     const authData = req.body.email
       ? { email: req.body.email }
