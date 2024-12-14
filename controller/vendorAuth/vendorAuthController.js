@@ -331,10 +331,23 @@ export const verifyOtpNumber = (req, res) => {
     ) {
         // OTP is valid
         delete otpStore[email]; // Clear OTP after verification
-        return res.json({
+        const queryToken=`SELECT token FROM Vendor WHERE email=?`
+        const values=[email]
+        pool.query(queryToken, values,(err,result) => {
+           if(err){
+            return res.status(500).json({
+                status: "error",
+                message: "Something went wrong while fetching token",
+                error: err.message,
+            })
+           }
+           return res.json({
             status: "success",
+            token:result.token,
             message: "OTP verified successfully",
         });
+        });
+       
     } else {
         // OTP is invalid or expired
         return res.status(400).json({
@@ -356,10 +369,22 @@ export const verifyOtpNumber = (req, res) => {
    ) {
        // OTP is valid
        delete otpStore[mobile]; // Clear OTP after verification
-       return res.json({
-           status: "success",
-           message: "OTP verified successfully",
-       });
+       const queryToken=`SELECT token FROM Vendor WHERE mobile=?`
+        const values=[mobile]
+        pool.query(queryToken, values,(err,result) => {
+           if(err){
+            return res.status(500).json({
+                status: "error",
+                message: "Something went wrong while fetching token",
+                error: err.message,
+            })
+           }
+           return res.json({
+            status: "success",
+            token:result.token,
+            message: "OTP verified successfully",
+        });
+        });
    } else {
        // OTP is invalid or expired
        return res.status(400).json({
