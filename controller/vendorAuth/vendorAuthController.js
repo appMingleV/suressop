@@ -499,6 +499,7 @@ export const vendorDetails = (req, res) => {
                 return res.status(200).json({
                     status: "success",
                     message: "Vendor details fetched successfully",
+                    statusVendor:result[0].status,
                     data: {
                         vendorPersonalDetails: result[0],
                         vendorShopDetails: result1[0]
