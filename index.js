@@ -52,6 +52,9 @@ app.post('/api/verifyOTP', verifyOtpNumber);
 //get vendor details-->
 app.get('/api/vendor/:vendorId',vendorDetails)
 
+
+
+
 //vendor login
 app.post('/api/vendor/login',login)
 
