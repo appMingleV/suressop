@@ -162,7 +162,7 @@ export const emailOTP = async (req, res) => {
 }
 
 export const login = async (req, res) => {
-    console.log("Login is running");
+   
     try {
         const authData = req.body.email
             ? { email: req.body.email }
@@ -235,7 +235,6 @@ export const login = async (req, res) => {
                     return res.status(200).json({
                         status: "success",
                         message: "OTP sent to email successfully",
-                        token,
                     });
 
                 })
@@ -296,7 +295,6 @@ export const login = async (req, res) => {
                     return res.status(200).json({
                         status: "success",
                         message: "OTP sent to mobile number successfully",
-                        token,
                     });
                 })
 
