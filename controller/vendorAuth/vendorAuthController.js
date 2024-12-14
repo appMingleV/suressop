@@ -413,7 +413,7 @@ export const verifyOtpNumber = (req, res) => {
           return res.json({
             status: "success",
             token: token,
-            vendorID:result[0].id,
+            vendorId:result[0].id,
             message: "OTP verified successfully",
           });
         });
@@ -434,7 +434,7 @@ export const verifyOtpNumber = (req, res) => {
       ) {
         // OTP is valid
         delete otpStore[mobile]; // Clear OTP after verification
-        const queryToken = `SELECT token FROM Vendor WHERE mobile=?`;
+        const queryToken = `SELECT token,id FROM Vendor WHERE mobile=?`;
         const values = [mobile.substring(3)];
         pool.query(queryToken, values, (err, result) => {
           if (err) {
@@ -458,6 +458,7 @@ export const verifyOtpNumber = (req, res) => {
           return res.json({
             status: "success",
             token: token,
+            vendorId:result[0].id,
             message: "OTP verified successfully",
           });
         });
