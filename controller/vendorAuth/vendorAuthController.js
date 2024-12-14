@@ -389,7 +389,7 @@ export const verifyOtpNumber = (req, res) => {
       ) {
         // OTP is valid
         delete otpStore[email]; // Clear OTP after verification
-        const queryToken = `SELECT token FROM Vendor WHERE email=?`;
+        const queryToken = `SELECT token,id FROM Vendor WHERE email=?`;
         const values = [email];
         pool.query(queryToken, values, (err, result) => {
           if (err) {
@@ -413,6 +413,7 @@ export const verifyOtpNumber = (req, res) => {
           return res.json({
             status: "success",
             token: token,
+            vendorID:result[0].id,
             message: "OTP verified successfully",
           });
         });
@@ -485,22 +486,7 @@ export const vendorDetails = (req, res) => {
                     error: err.message
                 })
             }
-            if (result[0].status == 'Pending') {
-                return res.status(200).json({
-                    status: "pending",
-                    message: "Vendor is not approved",
-                })
-            }else if(result[0].status == 'Reject') {
-                return res.status(200).json({
-                    status: "reject",
-                    message: "Vendor is rejected",
-                })
-            }else if(result[0].status == 'Suspended'){
-                return res.status(200).json({
-                    status: "suspended",
-                    message: "Vendor is suspended",
-                })
-            } 
+           
             const queryshopDetails = `SELECT * FROM vendorStoreDetails WHERE vendor_id=${vendorId}`
             pool.query(queryshopDetails, (err, result1) => {
                 if (err) {
@@ -517,7 +503,6 @@ export const vendorDetails = (req, res) => {
                         vendorPersonalDetails: result[0],
                         vendorShopDetails: result1[0]
                     }
-
                 })
             })
         })
