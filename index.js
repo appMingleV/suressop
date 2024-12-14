@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { otpSend, verifyOtpNumber,verifyOtpEmail, emailOTP, signup,vendorDetails } from './controller/signupController.js'
+import { otpSend, verifyOtpNumber, emailOTP, signup,vendorDetails,login } from './controller/vendorAuth/vendorAuthController.js'
 import pool from './config/db.js'
 import multer from "multer";
 import admin from  './route/admin.js'
@@ -45,13 +45,15 @@ app.post('/api/otp/vendor/email', emailOTP)
 
 
 //verify the OTP-->
-app.post('/api/number/verifyOTP', verifyOtpNumber);
-app.post('/api/email/verifyOTP', verifyOtpEmail);
+app.post('/apiverifyOTP', verifyOtpNumber);
+
 
 
 //get vendor details-->
 app.get('/api/vendor/:vendorId',vendorDetails)
 
+//vendor login
+app.post('/api/vendor/login',login)
 
 //admin Routes
 app.use('/api',admin);
