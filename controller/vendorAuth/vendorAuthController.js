@@ -11,7 +11,7 @@ export const signup = (req, res) => {
     try {
         const { ownerName, gender, dob, mobile, email, address, storeName, userName, storeCategory, storeAddress, BusinessContact, aadharNumber, PAN, documentType } = req.body;
         const { aadharNumberFront, aadharNumberBack, PANDocument, DocumentProof } = req.files
-        if (ownerName == undefined || gender == undefined || dob == undefined || mobile == undefined || email == undefined || address == undefined || address == undefined || storeName == undefined || userName == undefined || storeAddress == undefined || storeCategory == undefined || aadharNumber == undefined || PAN == undefined || documentType == undefined || aadharNumberFront == undefined || aadharNumberBack == undefined || PANDocument == undefined || DocumentProof == undefined) {
+        if (ownerName == undefined || gender == undefined || gender=='' || dob == undefined || mobile == undefined || email == undefined || address == undefined || address == undefined || storeName == undefined || userName == undefined || storeAddress == undefined || storeCategory == undefined || aadharNumber == undefined || PAN == undefined || documentType == undefined || aadharNumberFront == undefined || aadharNumberBack == undefined || PANDocument == undefined || DocumentProof == undefined) {
             return res.status(404).json({
                 status: "failed",
                 message: "All fields are required",
