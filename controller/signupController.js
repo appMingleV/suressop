@@ -6,12 +6,16 @@ import { response } from 'express';
 const otpStore = [];
 
 export const signup = (req, res) => {
-    const baseURL = `${req.protocol}://${req.get('host')}`;
-    const { ownerName, gender, dob, mobile, email, address, storeName, userName, storeCategory, storeAddress, BusinessContact, aadharNumber, PAN, documentType } = req.body;
-    const { aadharNumberFront, aadharNumberBack, PANDocument, DocumentProof } = req.files
-
 
     try {
+        const { ownerName, gender, dob, mobile, email, address, storeName, userName, storeCategory, storeAddress, BusinessContact, aadharNumber, PAN, documentType } = req.body;
+        const { aadharNumberFront, aadharNumberBack, PANDocument, DocumentProof } = req.files
+        if(ownerName==undefined || gender==undefined || dob==undefined || mobile==undefined || email==undefined || address==undefined || address==undefined || storeName==undefined || userName==undefined || storeAddress==undefined ||storeCategory==undefined  || aadharNumber==undefined || PAN==undefined || documentType==undefined || aadharNumberFront==undefined || aadharNumberBack==undefined || PANDocument==undefined || DocumentProof==undefined ){
+            return  res.status(404).json({
+                status:"failed",
+                message:"All fields are required",
+            })
+        }
         const queryPersonal = `INSERT INTO  Vendor (ownerName,gender,dob,mobile,email,address) VALUES (?,?,?,?,?,?)`
         const values = [ownerName, gender, dob, mobile, email, address];
         pool.query(queryPersonal, values, (err, result) => {
@@ -224,7 +228,7 @@ export const vendorDetails = (req, res) => {
                     error: err.message
                 })
             }
-            if(!result[0].status){
+            if(result[0].status=='Pending'){
                 return res.status(200).json({
                     status: "pending",
                     message: "Vendor is not approved",

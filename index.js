@@ -4,6 +4,7 @@ import cors from 'cors';
 import { otpSend, verifyOtpNumber,verifyOtpEmail, emailOTP, signup,vendorDetails } from './controller/signupController.js'
 import pool from './config/db.js'
 import multer from "multer";
+import admin from  './route/admin.js'
 
 //multer upload images
 const storage = multer.diskStorage({
@@ -50,6 +51,10 @@ app.post('/api/email/verifyOTP', verifyOtpEmail);
 
 //get vendor details-->
 app.get('/api/vendor/:vendorId',vendorDetails)
+
+
+//admin Routes
+app.use('/api',admin);
 
 app.listen(process.env.PORT, (err) => {
     if (err) {
