@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import {addCategory,editCategory,deleteCategory,singleCategory,getAllCategories} from '../controller/adminController/categoryContoller.js'
-import {vedorList,singleVendor} from '../controller/adminController/adminController.js'
+import {vedorList,singleVendor,vedorChangeStatus} from '../controller/adminController/adminController.js'
 import multer from "multer";
 
 const routes=Router();
@@ -49,6 +49,7 @@ routes.delete('/admin/subategory/:subcategoryId',deleteCategory);
 //vendor list-->
 routes.get('/admin/vendor/:query',vedorList)
 routes.get('/admin/vendorSingle/:vendorId',singleVendor)
+routes.put('/admin/vendorStatus/:vendorId',vedorChangeStatus)
 
 
 

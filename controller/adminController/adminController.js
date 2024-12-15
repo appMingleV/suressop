@@ -1,4 +1,4 @@
-import { CatalogItem } from 'twilio/lib/rest/content/v1/content.js';
+import nodemailer from 'nodemailer';
 import pool from '../../config/db.js'
 export const vedorList = (req, res) => {
     try {
@@ -125,10 +125,87 @@ export const singleVendor=(req,res)=>{
 }
 
 
-
-export const vedorChangeStaus=(req,res)=>{
+//admin can access dashboard for vendor--->
+export const vedorChangeStatus=(req,res)=>{
     try{
-      
+      const {vendorId}=req.params
+      const {status}=req.body;
+
+      if(status=="accept"){
+        const querUpdateStatus=`UPDATE Vendor SET status=? WHERE id=?`;
+        const value=["Accept",vendorId];
+        pool.query(querUpdateStatus,value,(err,status)=>{
+            if(err){
+                return res.status(500).json({
+                    status:"error",
+                    message:"Something went wrong while trying to accept vendor",
+                    error:err.message
+                })
+            }
+            if(result.length===0){
+                return res.status(400).json({
+                    status:"failed",
+                    message:"Vendor not found"
+                })
+            }
+            return res.status(200).json({
+                status:"success",
+                message:"Vendor accepted successfully"
+            })
+        })
+      }else {
+        const {description}=req.body;
+        const queryVendor=`SELECT email FROM Vendor WHERE id=?`;
+        const value=[vendorId];
+        pool.query(queryVendor, value,(err,result)=>{
+            if(err){
+                return res.status(500).json({
+                    status:"error",
+                    message:"Something went wrong while trying to fetch vendor email",
+                    error:err.message
+                })
+            }
+            if(result.length===0){
+                return res.status(400).json({
+                    status:"failed",
+                    message:"Vendor not found"
+                })
+            }
+            const {email}=result[0];
+            const queryUpdateStatus=`UPDATE Vendor SET status=? WHERE id=?`
+            const value=[status,vendorId];
+            pool.query(queryUpdateStatus,value,async (err,status)=>{
+                if(err){
+                    return res.status(500).json({
+                        status:"error",
+                        message:"Something went wrong while trying to update vendor status",
+                        error:err.message
+                    })
+                }
+                const transporter=nodemailer.createTransport({
+                    service:'gmail',
+                    secure:true,
+                    port:465,
+                    auth:{
+                        user:'vanshdeep703@gmail.com',
+                        pass:'ylql ugtz pouo qihs', // Use an app password for Gmail
+                    }
+                })
+
+                const mailConfig={
+                    from:'vanshdeep703@gmail.com',
+                    to:email,
+                    subject:'Vendor Status Update',
+                    text:`Your vendor status has been updated. Current status: ${status}. ${description}`
+                }
+                const response=await transporter.sendMail(mailConfig)
+                return res.status(200).json({
+                    status:"success",
+                    message:"Vendor status updated successfully and email sent to vendor"
+                })
+            })
+        })
+      }
     }catch(err){
         return res.status(500).json({
             status:"error",
