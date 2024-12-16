@@ -17,9 +17,9 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage:storage });
 //uplaod images multiply
-const multipleupload = upload.fields([{ name: 'aadharNumberFront' }, { name: 'aadharNumberBack' }, { name: 'PANDocument' }, { name: 'DocumentProof' }]);
+const multipleupload = upload.fields([{ name: 'aadharNumberFront',maxCount: 1  }, { name: 'aadharNumberBack',maxCount: 1  }, { name: 'PANDocument',maxCount: 1  }, { name: 'DocumentProof',maxCount: 1  }]);
 
 const app = express();
 dotenv.config();
