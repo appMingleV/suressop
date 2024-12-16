@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import {addCategory,editCategory,deleteCategory,singleCategory,getAllCategories} from '../controller/adminController/categoryContoller.js'
 import {vedorList,singleVendor,vedorChangeStatus} from '../controller/adminController/adminController.js'
-import {addSubCategory,editSubCategory,deleteSubCategory,singleSubCategory,getAllSubCategories} from '../controller/adminController/subcategoryController.js'
+import {addSubCategory,editSubCategory,deleteSubCategory,singleSubCategory,getAllSubCategories,subCategeriesByCategories} from '../controller/adminController/subcategoryController.js'
 import multer from "multer";
 
 const routes=Router();
@@ -46,6 +46,7 @@ routes.put('/admin/subcategory/:subCategoryId',singleImageSubCategory,editSubCat
 routes.get('/admin/subcategory/:subcategoryId',singleSubCategory);
 routes.get('/admin/subcategory',getAllSubCategories);
 routes.delete('/admin/subategory/:subcategoryId',deleteSubCategory);
+routes.get('/admin/subategory/category/:categoryId',subCategeriesByCategories);
 
 //vendor list-->
 routes.get('/admin/vendor/:query',vedorList)

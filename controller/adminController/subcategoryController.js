@@ -246,3 +246,37 @@ export const deleteSubCategory = (req, res) => {
             })
         }
     }
+
+export const subCategeriesByCategories=(req,res)=>{
+    try{
+        const {categoryId}=req.params;
+        const querysubCategeriesByCategories=`SELECT * FROM sub_categories WHERE category_id=?`;
+        const value=[categoryId];
+        pool.query(querysubCategeriesByCategories,value,(err,result)=>{
+            if(err){
+                return res.status(500).json({
+                    status:"error",
+                    message:"Something went wrong while trying to fetch sub categories by category",
+                    error:err.message
+                })
+            }
+            if(result.length===0)return  res.status(400).json({
+                status:"failed",
+                message:"No sub categories found for this category"
+ 
+            })
+            return res.status(200).json({
+                status:"success",
+                message:"Sub categories fetched successfully by category",
+                data:result
+            })
+        });
+
+    }catch(err){
+            return res.status(500).json({
+                status:"error",
+                message:"Something went wrong while trying to fetch all sub categories",
+                error:err.message
+            })
+    }
+}
