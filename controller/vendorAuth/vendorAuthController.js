@@ -487,7 +487,12 @@ export const vendorDetails = (req, res) => {
                     error: err.message
                 })
             }
-           
+             if(result.length==0){
+              return res.status(404).json({
+                    status: "failed",
+                    message: "Vendor not found"
+                })
+             }
             const queryshopDetails = `SELECT * FROM vendorStoreDetails WHERE vendor_id=${vendorId}`
             pool.query(queryshopDetails, (err, result1) => {
                 if (err) {
