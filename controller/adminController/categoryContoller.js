@@ -122,7 +122,11 @@ export const deleteCategory = (req, res) => {
         })
      })
    }catch{
-
+          return res.status(500).json({
+            status:"error",
+            message:"Something went wrong while trying to delete category",
+            error:err.message
+        })
    }
 }
 
