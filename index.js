@@ -1,7 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { otpSend, verifyOtpNumber, verifyOtpSignup,emailOTP, signup,vendorDetails,login } from './controller/vendorAuth/vendorAuthController.js'
+import { otpSend, verifyOtpNumber, verifyOtpSignup,emailOTP, signup,vendorDetails,login, } from './controller/vendorAuth/vendorAuthController.js'
+import {shopDetails} from './controller/vendorAuth/shopDetails.js'
 import pool from './config/db.js'
 import multer from "multer";
 import admin from  './route/admin.js'
@@ -56,6 +57,9 @@ app.get('/api/vendor/:vendorId',vendorDetails)
 
 //vendor login
 app.post('/api/vendor/login',login)
+
+app.get('/api/shopDetails/:vendorId',shopDetails);
+
 
 //admin Routes
 app.use('/api',admin);
