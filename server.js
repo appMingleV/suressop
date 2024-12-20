@@ -2,7 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { otpSend, verifyOtpNumber, verifyOtpSignup,emailOTP, signup,vendorDetails,login, } from './controller/vendorAuth/vendorAuthController.js'
-import {shopDetails} from './controller/vendorAuth/shopDetails.js'
+import {shopDetails,editShopDetails,allStores} from './controller/vendorAuth/shopDetails.js'
+import {showProductsDetails,getProductCategoriesSubCate} from './controller/vendorAuth/product.js';
 import pool from './config/db.js'
 import multer from "multer";
 import admin from  './route/admin.js'
@@ -58,8 +59,25 @@ app.get('/api/vendor/:vendorId',vendorDetails)
 //vendor login
 app.post('/api/vendor/login',login)
 
-app.get('/api/shopDetails/:vendorId',shopDetails);
+const storage1=multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/vendor/logobanner/'); // Folder for storing uploaded files
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix =Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + '-' + file.originalname);
+    }
+})
+const upload1 = multer({ storage:storage1 });
 
+const multipleupload1 = upload1.fields([{ name: 'logo',maxCount: 1  }, { name: 'banner',maxCount: 1  }]);
+
+
+app.get('/api/shopDetails/:vendorId',shopDetails);
+app.put('/api/shopDetails/:vendorId',multipleupload1,editShopDetails)
+app.get('/api/allStores',allStores);
+app.get('/api/stores/products/:vendorId',showProductsDetails)
+app.get('/api/products/cate/:categId/subcate/:subCateId',getProductCategoriesSubCate)
 
 //admin Routes
 app.use('/api',admin);
