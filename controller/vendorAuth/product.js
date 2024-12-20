@@ -12,8 +12,6 @@ export const showProductsDetails = async (req, res) => {
         })
         
         const getFullProducts=await getMinConfig(productData);
-
-       
         return res.status(200).json({
             status: "success",
             message: "Products fetched successfully",

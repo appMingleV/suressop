@@ -73,7 +73,7 @@ const upload1 = multer({ storage:storage1 });
 const multipleupload1 = upload1.fields([{ name: 'logo',maxCount: 1  }, { name: 'banner',maxCount: 1  }]);
 
 
-app.get('/api/shopDetails/:vendorId',shopDetails);
+app.get('/api/shopDetails/:storeId',shopDetails);
 app.put('/api/shopDetails/:vendorId',multipleupload1,editShopDetails)
 app.get('/api/allStores',allStores);
 app.get('/api/stores/products/:vendorId',showProductsDetails)
