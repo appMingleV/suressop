@@ -3,6 +3,7 @@ import { Router } from "express";
 import {addCategory,editCategory,deleteCategory,singleCategory,getAllCategories} from '../controller/adminController/categoryContoller.js'
 import {vedorList,singleVendor,vedorChangeStatus} from '../controller/adminController/adminController.js'
 import {addSubCategory,editSubCategory,deleteSubCategory,singleSubCategory,getAllSubCategories,subCategeriesByCategories} from '../controller/adminController/subcategoryController.js'
+import {addSlider,allSlider,deleteSlider} from '../controller/adminController/sliderController.js'
 import multer from "multer";
 
 const routes=Router();
@@ -55,4 +56,21 @@ routes.put('/admin/vendorStatus/:vendorId',vedorChangeStatus)
 
 
 
+
+//slider-->
+const storage2=multer.diskStorage({
+    destination:(req,file,cb)=>{
+     cb(null,'uploads/sliders/');
+    },
+    filename:(req,file,cb)=>{
+        const uniqueSuffix ='slider' +Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + '-' + file.originalname);
+    }
+})
+
+const upload2=multer({storage:storage2});
+const singleImage2=upload2.single('image');
+routes.post('/admin/sliders',singleImage2,addSlider);
+routes.get('/admin/sliders',allSlider);
+routes.delete('/admin/sliders/:sliderId',deleteSlider);
 export default routes;
