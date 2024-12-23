@@ -4,8 +4,8 @@ import {addCategory,editCategory,deleteCategory,singleCategory,getAllCategories}
 import {vedorList,singleVendor,vedorChangeStatus} from '../controller/adminController/adminController.js'
 import {addSubCategory,editSubCategory,deleteSubCategory,singleSubCategory,getAllSubCategories,subCategeriesByCategories} from '../controller/adminController/subcategoryController.js'
 import {addSlider,allSlider,deleteSlider} from '../controller/adminController/sliderController.js'
+import campaign from './campaign.js'
 
-import {compaignAdd,getCampaign,updateCampaign,deleteCampaign} from '../controller/adminController/campaignController.js'
 import multer from "multer";
 
 
@@ -78,23 +78,8 @@ routes.get('/admin/sliders',allSlider);
 routes.delete('/admin/sliders/:sliderId',deleteSlider);
 
 
-const storage3=multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/campaign/'); // Folder for storing uploaded files
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix ='campaign' +Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + '-' + file.originalname);
-    }
-})
 
-const upload3=multer({ storage:storage3 });
-const campaignImage=upload3.single('image');
-routes.post('/admin/campaign/page/:page/location/:location',campaignImage,compaignAdd)
-routes.put('/admin/campaign/:campaignId',campaignImage,updateCampaign)
-routes.delete('/admin/campaign/:campaignId',deleteCampaign)
-routes.get('/admin/campaign/page/:page/location/:location',getCampaign)
-
+routes.use('/admin/campaign',campaign)
 
 
 
