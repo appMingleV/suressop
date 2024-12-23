@@ -21,6 +21,7 @@ const campaignImage=upload3.single('image');
 routes.post('/page/:page/location/:location',campaignImage,compaignAdd)
 routes.put('/:campaignId',campaignImage,updateCampaign)
 routes.delete('/:campaignId',deleteCampaign)
+
 routes.get('/page/:page/location/:location',getCampaign)
 
 
