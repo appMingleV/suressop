@@ -6,7 +6,7 @@ export const compaignAdd= async(req,res)=>{
         const {buttonName,link}=req.body;
         const {page,location}=req.params;
         const queryCampaign=`INSERT INTO campaign  (button_name,link,image,page,date,location) VALUES (?,?,?,?,?,?)`
-        const value=[buttonName,link,req.file.filename,page,new Date(),location];
+        const value=[buttonName,link,req.file.filename||null,page,new Date(),location];
         const campaignSet=await queryPromises(queryCampaign,value);
         if(!campaignSet)return res.status(500).json({
             status:"failed",
