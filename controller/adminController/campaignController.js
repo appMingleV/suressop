@@ -1,4 +1,4 @@
-import { query } from "express";
+
 import pool from "../../config/db.js";
 
 export const compaignAdd= async(req,res)=>{
