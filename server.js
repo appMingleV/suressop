@@ -8,6 +8,7 @@ import pool from './config/db.js'
 import multer from "multer";
 import admin from  './route/admin.js'
 
+
 //multer upload images
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -78,6 +79,7 @@ app.put('/api/shopDetails/:vendorId',multipleupload1,editShopDetails)
 app.get('/api/allStores',allStores);
 app.get('/api/stores/products/:vendorId',showProductsDetails)
 app.get('/api/products/cate/:categId/subcate/:subCateId',getProductCategoriesSubCate)
+
 
 //admin Routes
 app.use('/api',admin);
