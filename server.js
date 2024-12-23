@@ -4,7 +4,7 @@ import cors from 'cors';
 import { otpSend, verifyOtpNumber, verifyOtpSignup,emailOTP, signup,vendorDetails,login, } from './controller/vendorAuth/vendorAuthController.js'
 import {shopDetails,editShopDetails,allStores} from './controller/vendorAuth/shopDetails.js'
 import {showProductsDetails,getProductCategoriesSubCate} from './controller/vendorAuth/product.js';
-import pool from './config/db.js'
+
 import multer from "multer";
 import admin from  './route/admin.js'
 
