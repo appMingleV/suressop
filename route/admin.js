@@ -4,6 +4,7 @@ import {addCategory,editCategory,deleteCategory,singleCategory,getAllCategories}
 import {vedorList,singleVendor,vedorChangeStatus} from '../controller/adminController/adminController.js'
 import {addSubCategory,editSubCategory,deleteSubCategory,singleSubCategory,getAllSubCategories,subCategeriesByCategories} from '../controller/adminController/subcategoryController.js'
 import {addSlider,allSlider,deleteSlider} from '../controller/adminController/sliderController.js'
+import coupon from './coupons.js';
 import campaign from './campaign.js'
 
 import multer from "multer";
@@ -73,13 +74,16 @@ const storage2=multer.diskStorage({
 
 const upload2=multer({storage:storage2});
 const singleImage2=upload2.single('image');
-routes.post('/admin/sliders',singleImage2,addSlider);
-routes.get('/admin/sliders',allSlider);
+routes.post('/admin/sliders/:query',singleImage2,addSlider);
+routes.get('/admin/sliders/:query',allSlider);
 routes.delete('/admin/sliders/:sliderId',deleteSlider);
 
 
-
+//campaign routes-->
 routes.use('/admin/campaign',campaign)
+
+//coupon routes-->
+routes.use('/admin/coupon',coupon)
 
 
 
