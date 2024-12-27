@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import {addCategory,editCategory,deleteCategory,singleCategory,getAllCategories} from '../controller/adminController/categoryContoller.js'
-import {vedorList,singleVendor,vedorChangeStatus} from '../controller/adminController/adminController.js'
+import {vedorList,singleVendor,vedorChangeStatus,vendorOrderList} from '../controller/adminController/adminController.js'
 import {addSubCategory,editSubCategory,deleteSubCategory,singleSubCategory,getAllSubCategories,subCategeriesByCategories} from '../controller/adminController/subcategoryController.js'
 import {addSlider,allSlider,deleteSlider} from '../controller/adminController/sliderController.js'
 import coupon from './coupons.js';
@@ -57,6 +57,7 @@ routes.get('/admin/subategory/category/:categoryId',subCategeriesByCategories);
 routes.get('/admin/vendor/:query',vedorList)
 routes.get('/admin/vendorSingle/:vendorId',singleVendor)
 routes.put('/admin/vendorStatus/:vendorId',vedorChangeStatus)
+routes.get('/admin/vendor/:vendorId/order/',vendorOrderList)
 
 
 

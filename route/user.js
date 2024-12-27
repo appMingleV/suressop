@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {applyCouponsTotalAmount,getALLTotalCouponsTotalAmount,getALLCategoryCoupons,applyCategoryCoupon} from '../controller/adminController/couponsController.js'
+import {applyCouponsTotalAmount,getALLTotalCouponsTotalAmount,getALLCategoryCoupons,applyCategoryCoupon,getALLSubCategoryCoupons,applySubCategoryCoupon} from '../controller/adminController/couponsController.js'
 
 const routes=Router();
 
@@ -13,7 +13,8 @@ routes.get('/all/coupons/category/:categoryId',getALLCategoryCoupons);
 routes.post('/applyCoupons/category/:categoryId',applyCategoryCoupon);
 
 //category coupon routes-->
-routes.get('')
+routes.get('/all/coupons/category/:categoryId/subcategory/:subCategoryId',getALLSubCategoryCoupons);
+routes.post('/applyCoupons/category/:categoryId/subcategory/:subCategoryId',applySubCategoryCoupon);
 
 
 

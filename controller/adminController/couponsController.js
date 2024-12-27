@@ -2,12 +2,12 @@ import pool from "../../config/db.js";
 
 export const addCouponTotalAmount=async(req,res)=>{
     try{
-      const {precentageDis,couponCode,validAt,couponDiscri,status}=req.body;
-      const queryAddCoupon=`INSERT INTO coupons_total_amount (percentage_dis,coupon_code,valid_at,coupon_descri,status) VALUES (?,?,?,?,?)`;
-      const values=[precentageDis,couponCode,validAt,couponDiscri,status];
+      const {precentageDis,couponCode,validAt,couponDiscri,status,limitUser,limitAll}=req.body;
+      const queryAddCoupon=`INSERT INTO coupons_total_amount (percentage_dis,coupon_code,valid_at,coupon_descri,status,limit_user,limit_all) VALUES (?,?,?,?,?)`;
+      const values=[precentageDis,couponCode,validAt,couponDiscri,status,limitUser,limitAll];
      
      const addedCoupon=await queryPromise(queryAddCoupon,values);
-      if(!addedCoupon) return res.status(500).json({
+      if(addedCoupon.affectedRows==0) return res.status(500).json({
             status:"failed",
             message:"Failed to add coupon"
         })
@@ -55,7 +55,9 @@ export const deleteCouponTotalAmount=async(req,res)=>{
 
 export const getALLTotalCouponsTotalAmount =async(req,res)=>{
     try{
-      const queryGetCoupon=`SELECT * FROM coupons_total_amount WHERE status="active"`;
+        const date=new Date();
+        
+      const queryGetCoupon=`SELECT * FROM coupons_total_amount WHERE status="active" AND valid_at<=${date}`;
       const allCoupons=await queryPromise(queryGetCoupon);
       if(allCoupons.length==0){
         return res.status(400).json({
@@ -82,9 +84,14 @@ export const getALLTotalCouponsTotalAmount =async(req,res)=>{
 
 export const applyCouponsTotalAmount=async(req,res)=>{
     try{
-        const {couponCode,totalAmount} = req.body;
-        const queryFind=`SELECT percentage_dis FROM coupons_total_amount WHERE coupon_code=? AND status="active"`
-        const values=[couponCode];
+        const {couponCode,totalAmount,userId} = req.body;
+        const queryCheckCoupon=`SELECT status,date From limit_coupon WHERE couponCode=? AND type="totalAmount" AND userId=?`;
+        const valuesCheckCo=[couponCode,userId]
+
+        const getStatusCheck=await queryPromise(queryCheckCoupon,valuesCheckCo);
+        const date=new Date();
+        const queryFind=`SELECT percentage_dis,limit_user,limit_all FROM coupons_total_amount WHERE coupon_code=? AND status="active" AND valid_at<=${date}`
+        const values=[couponCode];  
 
         const couponDetails=await queryPromise(queryFind,values);
         if(couponDetails.length==0){
@@ -267,11 +274,13 @@ export const addSubCategoryCoupon=async(req,res)=>{
 
 export const deleteSubCategoryCoupon=async(req,res)=>{
     try{
-        const {couponsId}=req.params;
+        console.log("delete coupon")
+        const {couponId}=req.params;
         const queryDeleteCoupon=`DELETE FROM coupons_sub WHERE id=?`;
-        const values=[couponsId];
+        const values=[couponId];
         const deletedCoupon=await queryPromise(queryDeleteCoupon,values);
-        if(!deletedCoupon){
+        console.log(deletedCoupon);
+        if(deletedCoupon.affectedRows==0){
             return res.status(400).json({
                 status:"failed",
                 message:"Coupon not found"
@@ -297,10 +306,64 @@ export const getALLSubCategoryCoupons =async(req,res)=>{
     try{
 
         const {categoryId,subCategoryId}=req.params;
+        const queryGetCoupon=`SELECT * FROM coupons_sub WHERE status="active" AND category_id=? AND sub_category_id=?`;
+        const values=[categoryId,subCategoryId];
+        
+        const allCoupons=await queryPromise(queryGetCoupon,values);
+      
+        if(allCoupons.length==0){
+            return res.status(400).json({
+                status:"failed",
+                message:"No active subcategory coupons found"
+            })
+        }
+        return res.status(200).json(
+            {
+                status:"success",
+                message:"Active subcategory coupons fetched successfully",
+                data:allCoupons
+            })
     }catch(err){
         return res.status(500).json({
             status:"error",
             message:"Something went wrong while trying to fetch subcategory coupons",
+            error:err.message
+        })
+    }
+}
+
+
+export const applySubCategoryCoupon=async(req,res)=>{
+    try{ 
+       const {couponCode,productAmount}=req.body;
+       const {categoryId,subCategoryId}=req.params;
+       const queryAppyCoupon=`SELECT percentage_dis FROM coupons_sub WHERE  category_id=? AND sub_category_id=? AND coupon_code=? AND status="active"`
+       const values=[categoryId,subCategoryId,couponCode];
+       const couponDetails=await queryPromise(queryAppyCoupon,values);
+       if(couponDetails.length==0){
+            return res.status(400).json({
+                status:"failed",
+                message:"Coupon inactive"
+            })
+        }
+       const {percentage_dis}=couponDetails[0];
+       const discountAmount=(productAmount*percentage_dis)/100;
+       const finalAmount=productAmount-discountAmount;
+
+       return res.status(200).json(
+            {
+                status:"success",
+                message:"Coupon applied successfully",
+                data:{
+                    finalAmount,
+                    discountAmount
+                }
+            })
+
+    }catch(err){
+        return res.status(500).json({
+            status:"error",
+            message:"Something went wrong while trying to apply subcategory coupon",
             error:err.message
         })
     }
