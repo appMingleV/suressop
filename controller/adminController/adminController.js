@@ -272,6 +272,31 @@ export const vendorOrderList = async (req, res) => {
     }
 }
 
+//get all users-->
+export const getAllUsers=async (req,res)=>{
+       try{
+      const queryAllUser=`SELECT COUNT(*) AS total_entities FROM tbl_users`
+      const totalEntities=await queryPromises(queryAllUser);
+      if(totalEntities.length==0)return res.status(400).json({
+        status: "failed",
+        message: "No users found"
+      })
+      
+      return res.status(200).json({ 
+        status: "success",
+        message: "All users fetched successfully",
+        data: totalEntities[0].total_entities
+      })
+
+       }catch(err){
+        return res.status(500).json({
+            status: "error",
+            message: "Something went wrong while trying to fetch all users",
+            error: err.message
+        })
+       }
+}
+
 
 
 const queryPromises = (query, value = []) => {
