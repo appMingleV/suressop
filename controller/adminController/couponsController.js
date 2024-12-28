@@ -58,7 +58,7 @@ export const getALLTotalCouponsTotalAmount =async(req,res)=>{
         const date=new Date();
         const fullDate=date.getDate()+date.getMonth()+date.getFullYear();
         
-      const queryGetCoupon=`SELECT * FROM coupons_total_amount WHERE status="active"`;
+      const queryGetCoupon=`SELECT * FROM coupons_total_amount WHERE status="active" ORDER BY percentage_dis DESC`;
       const allCoupons=await queryPromise(queryGetCoupon);
       if(allCoupons.length==0){
         return res.status(400).json({
@@ -215,9 +215,8 @@ export const deleteCategoryCoupon=async(req,res)=>{
 
 export const getALLCategoryCoupons =async(req,res)=>{
     try{
-        console.log("Getting")
         const {categoryId}=req.params;
-        const queryGetCoupon=`SELECT * FROM coupons_cate WHERE status="active" AND category_id=?`;
+        const queryGetCoupon=`SELECT * FROM coupons_cate ORDER BY percentage_dis DESC`;
         const values=[categoryId];
         const allCoupons=await queryPromise(queryGetCoupon,values);
         if(allCoupons.length==0){
@@ -337,7 +336,7 @@ export const getALLSubCategoryCoupons =async(req,res)=>{
     try{
 
         const {categoryId,subCategoryId}=req.params;
-        const queryGetCoupon=`SELECT * FROM coupons_sub WHERE status="active" AND category_id=? AND sub_category_id=?`;
+        const queryGetCoupon=`SELECT * FROM coupons_sub ORDER BY percentage_dis DESC`;
         const values=[categoryId,subCategoryId];
         
         const allCoupons=await queryPromise(queryGetCoupon,values);
