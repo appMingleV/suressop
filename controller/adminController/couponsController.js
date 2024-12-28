@@ -216,7 +216,7 @@ export const deleteCategoryCoupon=async(req,res)=>{
 export const getALLCategoryCoupons =async(req,res)=>{
     try{
         const {categoryId}=req.params;
-        const queryGetCoupon=`SELECT * FROM coupons_cate ORDER BY percentage_dis DESC`;
+        const queryGetCoupon=`SELECT * FROM coupons_cate WHERE status="active" ORDER BY percentage_dis DESC`;
         const values=[categoryId];
         const allCoupons=await queryPromise(queryGetCoupon,values);
         if(allCoupons.length==0){
@@ -336,7 +336,7 @@ export const getALLSubCategoryCoupons =async(req,res)=>{
     try{
 
         const {categoryId,subCategoryId}=req.params;
-        const queryGetCoupon=`SELECT * FROM coupons_sub ORDER BY percentage_dis DESC`;
+        const queryGetCoupon=`SELECT * FROM coupons_sub WHERE status="active" ORDER BY percentage_dis DESC`;
         const values=[categoryId,subCategoryId];
         
         const allCoupons=await queryPromise(queryGetCoupon,values);
