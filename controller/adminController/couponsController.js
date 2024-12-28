@@ -160,9 +160,9 @@ export const applyCouponsTotalAmount=async(req,res)=>{
 export const addCategoryCoupon=async(req,res)=>{
     try{
         const {categoryId}=req.params;
-        const {couponCode,precentageDis,validAt,couponDiscri,status}=req.body;
-        const queryAddCoupon=`INSERT INTO coupons_cate (category_id,percentage_dis,coupon_code,valid_at,coupon_descri,status) VALUES (?,?,?,?,?,?)`;
-        const values=[categoryId,precentageDis,couponCode,validAt,couponDiscri,status];
+        const {couponCode,precentageDis,validAt,couponDiscri,status,limitUser,limitAll}=req.body;
+        const queryAddCoupon=`INSERT INTO coupons_cate (category_id,percentage_dis,coupon_code,valid_at,coupon_descri,status,limit_user,limit_all) VALUES (?,?,?,?,?,?,?,?)`;
+        const values=[categoryId,precentageDis,couponCode,validAt,couponDiscri,status,limitUser,limitAll];
         const addedCoupon=await queryPromise(queryAddCoupon,values);
         if(!addedCoupon) return res.status(500).json({
             status:"failed",
@@ -215,10 +215,11 @@ export const deleteCategoryCoupon=async(req,res)=>{
 
 export const getALLCategoryCoupons =async(req,res)=>{
     try{
+        console.log("Getting")
         const {categoryId}=req.params;
         const queryGetCoupon=`SELECT * FROM coupons_cate WHERE status="active" AND category_id=?`;
         const values=[categoryId];
-        const allCoupons=await queryPromise(queryGetCoupon);
+        const allCoupons=await queryPromise(queryGetCoupon,values);
         if(allCoupons.length==0){
             return res.status(400).json({
                 status:"failed",
@@ -279,9 +280,9 @@ export const applyCategoryCoupon=async(req,res)=>{
 export const addSubCategoryCoupon=async(req,res)=>{
     try{
      const {categoryId,subCategoryId} = req.params
-     const {precentageDis,couponCode,validAt,couponDiscri,status}=req.body;
-     const queryAddCouopon=`INSERT INTO coupons_sub (percentage_dis,coupon_code,valid_at,category_id,sub_category_id,coupon_descri,status) VALUES (?,?,?,?,?,?,?)`
-     const values=[precentageDis,couponCode,validAt,categoryId,subCategoryId,couponDiscri,status];
+     const {precentageDis,couponCode,validAt,couponDiscri,status,limitUser,limitAll}=req.body;
+     const queryAddCouopon=`INSERT INTO coupons_sub (percentage_dis,coupon_code,valid_at,category_id,sub_category_id,coupon_descri,status,limit_user,limit_all) VALUES (?,?,?,?,?,?,?,?,?)`
+     const values=[precentageDis,couponCode,validAt,categoryId,subCategoryId,couponDiscri,status,limitUser,limitAll];
      const addedCoupon=await queryPromise(queryAddCouopon,values);
      if(!addedCoupon) return res.status(500).json({
             status:"failed",
