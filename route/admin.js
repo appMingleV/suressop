@@ -85,7 +85,8 @@ routes.delete('/admin/sliders/:sliderId',deleteSlider);
 routes.get('/admin/totalUser',getAllUsers);
 
 
-//campaign routes-->
+//campaign routes-->cls
+
 routes.use('/admin/campaign',campaign)
 
 //coupon routes-->

@@ -3,7 +3,7 @@ import pool from "../../config/db.js";
 export const addCouponTotalAmount=async(req,res)=>{
     try{
       const {precentageDis,couponCode,validAt,couponDiscri,status,limitUser,limitAll}=req.body;
-      const queryAddCoupon=`INSERT INTO coupons_total_amount (percentage_dis,coupon_code,valid_at,coupon_descri,status,limit_user,limit_all) VALUES (?,?,?,?,?)`;
+      const queryAddCoupon=`INSERT INTO coupons_total_amount (percentage_dis,coupon_code,valid_at,coupon_descri,status,limit_user,limit_all) VALUES (?,?,?,?,?,?,?)`;
       const values=[precentageDis,couponCode,validAt,couponDiscri,status,limitUser,limitAll];
      
      const addedCoupon=await queryPromise(queryAddCoupon,values);
@@ -56,8 +56,9 @@ export const deleteCouponTotalAmount=async(req,res)=>{
 export const getALLTotalCouponsTotalAmount =async(req,res)=>{
     try{
         const date=new Date();
+        const fullDate=date.getDate()+date.getMonth()+date.getFullYear();
         
-      const queryGetCoupon=`SELECT * FROM coupons_total_amount WHERE status="active" AND valid_at<=${date}`;
+      const queryGetCoupon=`SELECT * FROM coupons_total_amount WHERE status="active"`;
       const allCoupons=await queryPromise(queryGetCoupon);
       if(allCoupons.length==0){
         return res.status(400).json({
@@ -85,21 +86,50 @@ export const getALLTotalCouponsTotalAmount =async(req,res)=>{
 export const applyCouponsTotalAmount=async(req,res)=>{
     try{
         const {couponCode,totalAmount,userId} = req.body;
-        const queryCheckCoupon=`SELECT status,date From limit_coupon WHERE couponCode=? AND type="totalAmount" AND userId=?`;
+        const queryCheckCoupon=`SELECT date From limit_coupon WHERE couponCode=? AND type="totalAmount" AND user_id=?`;
         const valuesCheckCo=[couponCode,userId]
-
+      
         const getStatusCheck=await queryPromise(queryCheckCoupon,valuesCheckCo);
         const date=new Date();
-        const queryFind=`SELECT percentage_dis,limit_user,limit_all FROM coupons_total_amount WHERE coupon_code=? AND status="active" AND valid_at<=${date}`
+        const fullDate=date.getDate()+date.getMonth()+date.getFullYear();
+        const queryFind=`SELECT percentage_dis,limit_user,limit_all FROM coupons_total_amount WHERE coupon_code=? AND status="active"`
         const values=[couponCode];  
+     
+        let lengthUsedCoupon=getStatusCheck.length;
 
         const couponDetails=await queryPromise(queryFind,values);
+       
+        let limitPerUser=couponDetails[0].limit_user;
+        let limitAll=couponDetails[0].limit_all;
         if(couponDetails.length==0){
             return res.status(400).json({
                 status:"failed",
                 message:"Coupon  inactive"
             })
         }
+        if(limitAll==0)return res.status(400).json({
+            status:"failed",
+            message:"Coupon limit reached"
+        })  
+        if(limitPerUser<=lengthUsedCoupon){
+               return res.status(400).json({
+                status:"failed",
+                message:"you have used all coupons"
+               })
+        }
+        const queryUpdateCoupon=`INSERT INTO  limit_coupon (user_id,couponCode,type,status,date) VALUES (?,?,?,?,?)`;
+        const valuesUpdate=[userId,couponCode,"totalAmount",true,fullDate];
+        const updateCoupon=await queryPromise(queryUpdateCoupon,valuesUpdate);
+        if(updateCoupon.affectedRows==0){
+            return res.status(500).json({
+                status:"failed",
+                message:"Failed to apply coupon"
+            })
+        }
+        const queryAllLimitDec=`UPDATE  coupons_total_amount SET limit_all=? WHERE coupon_Code=? AND status="active"`;
+        const valuesAllLimit=[--limitAll,couponCode];
+        const updateAllLimit=await queryPromise(queryAllLimitDec,valuesAllLimit); 
+      
         const {percentage_dis}=couponDetails[0];
         const discountAmount=(totalAmount*percentage_dis)/100;
         const finalAmount=totalAmount-discountAmount;
