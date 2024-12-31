@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {applyCouponsTotalAmount,getALLTotalCouponsTotalAmount,getALLCategoryCoupons,applyCategoryCoupon,getALLSubCategoryCoupons,applySubCategoryCoupon} from '../controller/adminController/couponsController.js'
-
+import { searchResult } from "../controller/userController/searchController.js";
 const routes=Router();
 
 
@@ -17,6 +17,7 @@ routes.get('/all/coupons/category/:categoryId/subcategory/:subCategoryId',getALL
 routes.post('/applyCoupons/category/:categoryId/subcategory/:subCategoryId',applySubCategoryCoupon);
 
 
-
+//search the items-->
+routes.get('/search',searchResult);
 
 export default routes;

@@ -71,3 +71,17 @@ const getMinConfig=(productData)=>{
         resolve(productData);
     })
 }
+
+
+export const editProductDetails=()=>{
+    try{
+        
+
+    }catch(err){
+        return res.status(500).json({
+            status: "error",
+            message: "Something went wrong while trying to edit product details",
+            error: err.message
+        })
+    }
+}

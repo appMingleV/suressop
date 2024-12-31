@@ -299,6 +299,9 @@ export const getAllUsers=async (req,res)=>{
 
 
 
+
+
+
 const queryPromises = (query, value = []) => {
     return new Promise((resolve, reject) => {
         pool.query(query, value, (err, result) => {

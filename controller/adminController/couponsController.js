@@ -185,9 +185,15 @@ export const addCategoryCoupon=async(req,res)=>{
 
 export const deleteCategoryCoupon=async(req,res)=>{
     try{
-     const {couponsId}=req.params;
+     const {couponId}=req.params;
+     if (!couponId || isNaN(couponId)) {
+        return res.status(400).json({
+            status: "failed",
+            message: "Invalid coupon ID provided",
+        });
+    }
      const queryDeleteCoupon=`DELETE FROM coupons_cate WHERE id=?`;
-     const values=[couponsId];
+     const values=[couponId];
      const deletedCoupon=await queryPromise(queryDeleteCoupon,values);
      if(!deletedCoupon){
         return res.status(400).json({
